@@ -1,0 +1,50 @@
+{
+    "name": "vuestructor",
+    "version": "0.1.0",
+    "description": "Page builder based on Vue.js",
+    "main": "dist/vuestructor.js",
+    "scripts": {
+        "dev": "poi demo/main.js",
+        "build": "cross-env NODE_ENV=production rollup -c",
+        "test": "exit 0"
+    },
+    "keywords": [
+        "builder",
+        "constructor"
+    ],
+    "author": "Enkot",
+    "license": "ISC",
+    "dependencies": {
+        "bulma": "^0.7.2",
+        "v-tooltip": "^2.0.0-rc.33",
+        "vue": "^2.5.17",
+        "vue-fragment": "^1.2.2",
+        "vue-json-pretty": "^1.4.1",
+        "vue-parallaxy": "^1.1.1",
+        "vue-popperjs": "^1.6.1",
+        "vuedraggable": "^2.16.0"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.1.5",
+        "@babel/preset-env": "^7.1.5",
+        "@vue/eslint-config-standard": "^4.0.0",
+        "babel-eslint": "^10.0.1",
+        "cross-env": "^5.0.5",
+        "eslint": "^5.8.0",
+        "eslint-plugin-vue": "^5.0.0-beta.3",
+        "node-sass": "^4.10.0",
+        "poi": "^8.1.1",
+        "rollup": "^0.67.0",
+        "rollup-plugin-commonjs": "^9.2.0",
+        "rollup-plugin-node-globals": "^1.4.0",
+        "rollup-plugin-node-resolve": "^3.4.0",
+        "rollup-plugin-postcss": "^1.6.2",
+        "rollup-plugin-vue": "^4.3.2",
+        "sass-loader": "^7.1.0",
+        "vue-template-compiler": "^2.5.13"
+    },
+    "peerDependencies": {
+        "vue": "^2.5.17",
+        "vuex": "^3.0.1"
+    }
+}
