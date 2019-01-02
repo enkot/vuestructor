@@ -4,7 +4,7 @@
             class="sidebar" 
             style="display: flex; flex-direction: column;"
         >
-            <draggable
+            <!-- <draggable
                 class="dragArea"
                 :list="components"
                 :options="{ group: { name: 'blocks', pull: 'clone', put: false }}"
@@ -15,6 +15,25 @@
                     :key="component.name"
                     class="element"
                 >{{ component.name }}</div>
+            </draggable> -->
+            <draggable
+                class="dragArea"
+                :list="blockList"
+                :options="{
+                    animation: 150,
+                }"
+            >
+                <div
+                    v-for="block in blockList"
+                    :key="block.id"
+                >
+                    <h4 class="title is-4">{{ block.name }}</h4>
+                    <BlockEditor 
+                        :block="block" 
+                        @change="updateData(block.id, $event)"
+                    />
+                    <br>
+                </div>
             </draggable>
         </div>
         <div class="artboard">
@@ -34,15 +53,19 @@
                         v-model="blockList"
                         class="drag-area"
                         style="height: 100%;"
-                        :options="{ group: { name: 'blocks' }, delay: 100 }"
+                        :options="{ 
+                            group: { name: 'blocks' }, 
+                            delay: 100,
+                            animation: 150,
+                        }"
                     >
                         <ComponentInjector
                             v-for="block in blockList"
-                            :key="block.component.id"
+                            :key="block.id"
                             :block="block"
-                            :component="componentByName(block.component.name)"
+                            :component="componentByName(block.name)"
                             style="position: relative;"
-                            @change="updateData(block.component.id, $event)"
+                            @change="updateData(block.id, $event)"
                         />
                     </draggable>
                 </ViewFrame>
@@ -59,6 +82,7 @@ import { generatePropsFromFunc, generateID } from '../utils/index'
 import ComponentInjector from './ComponentInjector.vue'
 import ViewFrame from './ViewFrame.vue'
 import ListWrapper from './ListWrapper.vue'
+import BlockEditor from './BlockEditor.vue'
 
 const { mapState, mapGetters, mapMutations } = createNamespacedHelpers('vs_store')
 
@@ -68,6 +92,7 @@ export default {
         draggable,
         ComponentInjector,
         ViewFrame,
+        BlockEditor,
     },
     props: {
         viewport: {
@@ -83,19 +108,18 @@ export default {
     },
     computed: {
         ...mapState({
-            placeholders: 'placeholders',
             blocks: 'blocks',
             components: 'components',
         }),
         ...mapGetters({
             componentByName: 'componentByName',
+            blockSlotValue: 'blockSlotValue',
         }),
         blockList: {
             get() {
                 return this.blocks
             },
             set(value) {
-                console.log(value)
                 this.updateBlocks(value)
             },
         },
@@ -110,48 +134,19 @@ export default {
             updateBlockData: 'updateBlockData',
         }),
         updateData(id, data) {
-            this.updateBlockData({
-                id,
-                data,
-            })
+            this.updateBlockData({ id, data })
         },
         cloneItem(component) {
-            const { name, schema } = component
+            const { name } = component
             
-            return this.fillBlockData(name, schema)
+            return this.fillBlockData(name)
         },
-        fillBlockData(name, schema) {
-            const data = {}
-            const fillSlots = (slot, single) => {
-                if (Array.isArray(slot)) {
-                    const slots = slot[0]
-                    const n = 3
-                    
-                    return single
-                        ? generatePropsFromFunc(slots, fillSlots)
-                        : [...Array(n)].map(() => generatePropsFromFunc(slots, fillSlots))
-                } else {
-                    const id = generateID()
-                    const { type } = slot
-
-                    data[id] = {
-                        type,
-                        ...this.placeholders[type],
-                    }
-
-                    return id
-                }
-            }
-
-            const slots = fillSlots([schema], true)
-
+        fillBlockData(name) {
             return {
-                component: { 
-                    id: generateID(),
-                    name,
-                },
-                data,
-                slots,
+                id: generateID(),
+                name,
+                data: null,
+                slots: null,
             }
         },
     },
@@ -183,11 +178,6 @@ export default {
         border-radius: 6px;
         overflow: hidden;
         box-shadow: 0 4px 16px rgba(0,0,0,.08);
-    }
-    .content-container {
-        &:hover {
-
-        }
     }
 }
 .drag-placeholder {

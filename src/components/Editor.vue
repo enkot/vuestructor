@@ -14,10 +14,9 @@
                 class="group-block"
             >
                 <input
-                    :value="linkValue"
+                    v-model="linkValue"
                     type="text" 
                     placeholder="Link here"
-                    @input="linkValue = $event.target.value"
                 >
                 <button 
                     class="submit-button"

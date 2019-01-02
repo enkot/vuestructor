@@ -9,35 +9,14 @@ Vue.config.productionTip = false
 Vuestructor.register({
     name: 'HeaderBlock', 
     component: () => import('./blocks/Header.vue'),
-    schema: {
-        title: { type: 'title' },
-        subtitle: { type: 'title' },
-        button: { type: 'link' },
-        links: [{ 
-            link: { type: 'link'},
-        }],
-        buttonTop: { type: 'link' },
-    },
 })
 Vuestructor.register({
     name: 'BenefitsBlock', 
     component: () => import('./blocks/Benefits.vue'),
-    schema: {
-        benefits: [{
-            title: { type: 'title' },
-            text: { type: 'text' },
-        }],
-    },
 })
 Vuestructor.register({
     name: 'DishesBlock', 
     component: () => import('./blocks/Dishes.vue'),
-    schema: {
-        dishes: [{
-            title: { type: 'title' }, 
-            links: { type: 'links' },
-        }],
-    },
 })
 Vue.use(Vuestructor, { 
     store,

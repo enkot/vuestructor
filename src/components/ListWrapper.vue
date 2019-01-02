@@ -7,7 +7,7 @@
             ref="popoverArea"
             class="vuestructor-popper"
         >
-            <button @click="addItem">Add</button>
+            <!-- <button @click="addItem">Add</button> -->
         </div>
         <div 
             slot="reference"
@@ -37,7 +37,6 @@ export default {
     },
     inject: [
         '$vs_id', 
-        '$vs_schema', 
         '$vs_slots',
     ],
     props: {
@@ -60,13 +59,13 @@ export default {
         ...mapMutations({
             addBlockItem: 'addBlockItem',
         }),
-        addItem() {
-            this.addBlockItem({ 
-                id: this.$vs_id, 
-                listName: this.listName, 
-                schema: this.$vs_schema[this.listName][0],
-            })
-        },
+        // addItem() {
+        //     this.addBlockItem({ 
+        //         id: this.$vs_id, 
+        //         listName: this.listName, 
+        //         schema: this.$vs_schema[this.listName][0],
+        //     })
+        // },
     },
 }
 </script>

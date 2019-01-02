@@ -38,5 +38,11 @@ export default {
             icon,
         }
     },
+    schema: {
+        benefits: [{
+            title: { type: 'title' },
+            text: { type: 'text' },
+        }],
+    },
 }
 </script>

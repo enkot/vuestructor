@@ -76,6 +76,15 @@ export default {
     //         bg,
     //     }
     // },
+    schema: {
+        title: { type: 'title' },
+        subtitle: { type: 'title' },
+        button: { type: 'link' },
+        links: [{ 
+            link: { type: 'link'},
+        }],
+        buttonTop: { type: 'link' },
+    },
 }
 </script>
 

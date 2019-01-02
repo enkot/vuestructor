@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import { generateID } from '../utils/index'
 
 export default {
@@ -12,10 +13,8 @@ export default {
         components: [],
         blocks: [
             {
-                component: {
-                    id: '_id_1',
-                    name: 'HeaderBlock',
-                },
+                id: '_id_1',
+                name: 'HeaderBlock',
                 data: {
                     '_id_1': { type: 'title', content: 'First' },
                     '_id_2': { type: 'title', content: 'Second' },
@@ -34,12 +33,19 @@ export default {
                         { link: '_id_5' },
                     ],
                 },
+                schema: {
+                    title: { name: 'Title', type: 'title' },
+                    subtitle: { type: 'title' },
+                    button: { type: 'link' },
+                    links: [{ 
+                        link: { type: 'link'},
+                    }],
+                    buttonTop: { type: 'link' },
+                },
             },
             {
-                component: {
-                    id: '_id_2',
-                    name: 'BenefitsBlock',
-                },
+                id: '_id_2',
+                name: 'BenefitsBlock',
                 data: {
                     '_id_1': { type: 'title', content: 'First' },
                     '_id_2': { type: 'title', content: 'Second' },
@@ -52,6 +58,12 @@ export default {
                         { title: '_id_2', text: '_id_4' },
                     ],
                 },
+                schema: {
+                    benefits: [{
+                        title: { type: 'title' },
+                        text: { type: 'text' },
+                    }],
+                },
             },
         ],
     },
@@ -59,36 +71,35 @@ export default {
         initComponents(state, components) {
             state.components = components
         },
-        addBlockItem(state, { id, listName, schema }) {
-            const item = state.blocks.find(item => item.component.id === id)
+        addBlockItem(state, { block, listName }) {
+            const schema = block.schema[listName][0]
+            const newBlockItem = Object.keys(schema).reduce((acc, name) => {
+                const id = generateID()
+                const { type } = schema[name]
 
-            if (item) {
-                const newBlockItem = Object.keys(schema).reduce((acc, name) => {
-                    const id = generateID()
-                    const { type } = schema[name]
+                Vue.set(block.data, id, {
+                    type,
+                    ...state.placeholders[type],
+                })
+                acc[name] = id
 
-                    item.data[id] = {
-                        type,
-                        ...state.placeholders[type],
-                    }
-                    acc[name] = id
+                return acc
+            }, {})
 
-                    return acc
-                }, {})
-
-                item.slots[listName].push(newBlockItem)
-            }
+            block.slots[listName].push(newBlockItem)
         },
         updateBlocks(state, blocks) {
             state.blocks = blocks
         },
         updateBlockData(state, { id, data }) {
-            const item = state.blocks.find(item => item.component.id === id)
-
-            if (item) {
-                const { uid, type, value } = data
-                item.data[uid][type] = value
-            }
+            const item = state.blocks.find(item => item.id === id)
+            const { uid, type, value } = data
+            item.data[uid][type] = value
+        },
+        setBlockData(state, { id, data, slots }) {
+            const item = state.blocks.find(item => item.id === id)
+            item.data = data
+            item.slots = slots
         },
     },
     getters: {
