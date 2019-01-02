@@ -73,13 +73,12 @@ import caprizioza from '../images/caprizioza.jpg'
 
 export default {
     name: 'DishesBlock',
-    props: [],
     data() {
         return {
             caprizioza,
         }
     },
-    $slotSchema: {
+    schema: {
         dishes: [{
             title: { type: 'title' }, 
             links: { type: 'links' },

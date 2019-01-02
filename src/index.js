@@ -43,16 +43,16 @@ class Vuestructor {
         GLOBAL.components.forEach((plugin) => plugin({ builder: this }))
     }
 
-    register({ name, component, schema }) {
+    register({ name, component }) {
         this.components.push({
             name,
-            schema,
-        })
-        Vue.component(name, () => ({
             component: component(),
-            loading: LoadingComponent,
-            delay: 0,
-        }))
+        })
+        // Vue.component(name, () => ({
+        //     component: component(),
+        //     loading: LoadingComponent,
+        //     delay: 0,
+        // }))
     }
 }
 

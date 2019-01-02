@@ -2,8 +2,10 @@
     <component
         :is="type"
         contenteditable="true"
-        @blur="update"
+        @input.prevent="update"
         @click="$emit('click')"
+        @focus="isEditing = true"
+        @blur="isEditing = false"
     />
 </template>
 
@@ -18,6 +20,17 @@ export default {
         value: {
             type: String,
             default: '',
+        },
+    },
+    data() {
+        return {
+            isEditing: false,
+        }
+    },
+    watch: {
+        value(val) {
+            if (this.isEditing) return
+            this.$el.innerHTML = val
         },
     },
     mounted() {
