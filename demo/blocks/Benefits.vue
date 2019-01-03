@@ -14,10 +14,10 @@
                             alt="Delivery"
                         >
                         <h5 class="title is-5">
-                            <slot :uid="item.title">Fast delivery</slot>
+                            <slot :val="item.title">Fast delivery</slot>
                         </h5>
                         <p>
-                            <slot :uid="item.text">Fast delivery</slot>
+                            <slot :val="item.text">Fast delivery</slot>
                         </p>
                     </div>
                 </template>
@@ -39,10 +39,14 @@ export default {
         }
     },
     schema: {
-        benefits: [{
-            title: { type: 'title' },
-            text: { type: 'text' },
-        }],
+        benefits: {
+            title: 'Benefits',
+            type: 'list',
+            items: {
+                title: { title: 'Title', type: 'title' },
+                text: { title: 'Text', type: 'text' },
+            },
+        },
     },
 }
 </script>

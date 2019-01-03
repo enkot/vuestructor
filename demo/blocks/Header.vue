@@ -30,14 +30,14 @@
                                 >
                                     <template slot-scope="{ item }">
                                         <slot
-                                            :uid="item.link"
+                                            :val="item.link"
                                             className="navbar-item"
                                         />
                                     </template>
                                 </vs-list>
                                 <span class="navbar-item">
                                     <slot
-                                        :uid="$vs_slots.buttonTop"
+                                        :val="$vs_slots.buttonTop"
                                         className="button is-link"
                                     />
                                 </span>
@@ -49,15 +49,15 @@
             <div class="hero-body">
                 <div class="container has-text-centered">
                     <h2 class="subtitle">
-                        <slot :uid="$vs_slots.subtitle">Subtitle</slot>
+                        <slot :val="$vs_slots.subtitle" />
                     </h2>
                     <h1 class="title">
-                        <slot :uid="$vs_slots.title">Title</slot>
+                        <slot :val="$vs_slots.title" />
                     </h1>
                     <slot 
-                        :uid="$vs_slots.button"
+                        :val="$vs_slots.button"
                         className="button is-primary is-medium"
-                    >Go to Menu</slot>
+                    />
                 </div>
             </div>
         </section>
@@ -77,13 +77,17 @@ export default {
     //     }
     // },
     schema: {
-        title: { type: 'title' },
-        subtitle: { type: 'title' },
-        button: { type: 'link' },
-        links: [{ 
-            link: { type: 'link'},
-        }],
-        buttonTop: { type: 'link' },
+        title: { title: 'Title', type: 'title' },
+        subtitle: { title: 'Subtitle', type: 'title' },
+        button: { title: 'Main button', type: 'link' },
+        links: { 
+            title: 'Nav links',
+            type: 'list',
+            items: {
+                link: { title: 'Link', type: 'link'},
+            },
+        },
+        buttonTop: { title: 'Nav button', type: 'link' },
     },
 }
 </script>

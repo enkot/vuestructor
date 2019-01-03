@@ -4,7 +4,7 @@
             class="sidebar" 
             style="display: flex; flex-direction: column;"
         >
-            <!-- <draggable
+            <draggable
                 class="dragArea"
                 :list="components"
                 :options="{ group: { name: 'blocks', pull: 'clone', put: false }}"
@@ -15,7 +15,7 @@
                     :key="component.name"
                     class="element"
                 >{{ component.name }}</div>
-            </draggable> -->
+            </draggable>
             <draggable
                 class="dragArea"
                 :list="blockList"
@@ -145,6 +145,8 @@ export default {
             return {
                 id: generateID(),
                 name,
+                title: null,
+                schema: null,
                 data: null,
                 slots: null,
             }

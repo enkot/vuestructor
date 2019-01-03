@@ -3,11 +3,11 @@
         :is="asyncComponent"
         class="component-block"
     >
-        <template slot-scope="{ uid, className }">
+        <template slot-scope="{ val, className }">
             <Editor
                 :class-name="className"
-                :data="block.data[uid]"
-                @change="editorChanged(uid, $event)"
+                :data="block.data[val]"
+                @change="editorChanged(val, $event)"
             />
         </template>
     </component>
@@ -75,7 +75,7 @@ export default {
             const { id } = this.block
             const { slots, data } = generateBlockData(schema, this.placeholders)
 
-            this.setBlockData({ id, data, slots })
+            this.setBlockData({ id, data, slots, schema })
             this.provideValues.$vs_slots = slots
         },
         editorChanged(uid, values) {
@@ -86,25 +86,25 @@ export default {
 
 function generateBlockData(schema, placeholders, data = {}) {
     return {
-        slots: getFilledSlots([schema]),
+        slots: getFilledSlots(schema),
         data,
     }
 
     function getFilledSlots(schema, root = true) {
-        if (Array.isArray(schema)) {
-            schema = schema[0]
-            const getFilledSchemaItem = () => 
-                Object.keys(schema).reduce((acc, name) => {
-                    acc[name] = getFilledSlots(schema[name], false)
-                    return acc
-                }, {})
-
-            return root 
-                ? getFilledSchemaItem()
-                : [...Array(3)].map(getFilledSchemaItem)
+        if (root) return getFilledSchemaItem(schema)
+        if (schema.type === 'list') {
+            schema = schema.items
+            
+            return [...Array(3)].map(() => getFilledSchemaItem(schema))
         }
 
         return getFilledDataId(schema)
+    }
+    function getFilledSchemaItem(schema) {
+        return Object.keys(schema).reduce((acc, name) => {
+            acc[name] = getFilledSlots(schema[name], false)
+            return acc
+        }, {})
     }
     function getFilledDataId({ type }, id = generateID()) {
         data[id] = { type, ...placeholders[type] }

@@ -34,7 +34,7 @@
                     @click="execCommand('italic')"
                 >I</button>
                 <button
-                    v-if="data.type === 'link'"
+                    v-if="data.link"
                     @click="editLinkMode(true)"
                 >Link</button>
             </div>
@@ -81,7 +81,7 @@ export default {
     },
     computed: {
         elementType() {
-            return this.data.type === 'link' ? 'a' : 'div'
+            return this.data.link ? 'a' : 'div'
         },
     },
     mounted() {
