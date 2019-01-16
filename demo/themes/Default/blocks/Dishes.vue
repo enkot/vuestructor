@@ -72,7 +72,7 @@
 import caprizioza from '../images/caprizioza.jpg'
 
 export default {
-    name: 'DishesBlock',
+    name: 'Dishes',
     data() {
         return {
             caprizioza,

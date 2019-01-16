@@ -1,4 +1,4 @@
-import ListWrapper from './ListWrapper.vue'
+import ListWrapper from '../components/ListWrapper.vue'
 
 export default {
     inject: [

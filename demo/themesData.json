@@ -1,0 +1,154 @@
+{
+    "Default": [{
+        "id": "_id_1",
+        "name": "Header",
+        "data": {
+            "_id_1": {
+                "content": "First"
+            },
+            "_id_2": {
+                "content": "Second"
+            },
+            "_id_3": {
+                "content": "Read More",
+                "link": "/more"
+            },
+            "_id_4": {
+                "content": "Home",
+                "link": "/home"
+            },
+            "_id_5": {
+                "content": "About",
+                "link": "/about"
+            },
+            "_id_6": {
+                "content": "More",
+                "link": "/more"
+            }
+        },
+        "slots": {
+            "title": "_id_1",
+            "subtitle": "_id_2",
+            "button": "_id_3",
+            "buttonTop": "_id_6",
+            "links": [{
+                "link": "_id_4"
+            }, {
+                "link": "_id_5"
+            }]
+        },
+        "schema": {
+            "title": {
+                "name": "Title",
+                "type": "title"
+            },
+            "subtitle": {
+                "name": "Subtitle",
+                "type": "title"
+            },
+            "button": {
+                "name": "Main button",
+                "type": "link"
+            },
+            "links": {
+                "name": "Nav links",
+                "type": "list",
+                "items": {
+                    "link": {
+                        "name": "Link",
+                        "type": "link"
+                    }
+                }
+            },
+            "buttonTop": {
+                "name": "Nav button",
+                "type": "link"
+            }
+        }
+    }, {
+        "id": "_id_2",
+        "name": "Benefits",
+        "data": {
+            "_id_1": {
+                "content": "First"
+            },
+            "_id_2": {
+                "content": "Second"
+            },
+            "_id_3": {
+                "content": "First text"
+            },
+            "_id_4": {
+                "content": "Second text"
+            }
+        },
+        "slots": {
+            "benefits": [{
+                "title": "_id_1",
+                "text": "_id_3"
+            }, {
+                "title": "_id_2",
+                "text": "_id_4"
+            }]
+        },
+        "schema": {
+            "benefits": {
+                "name": "Benefits",
+                "type": "list",
+                "items": {
+                    "title": {
+                        "name": "Title",
+                        "type": "title"
+                    },
+                    "text": {
+                        "name": "Text",
+                        "type": "text"
+                    }
+                }
+            }
+        }
+    }],
+    "MegaTheme": [{
+        "id": "_id_3",
+        "name": "Benefits",
+        "data": {
+            "_id_1": {
+                "content": "First"
+            },
+            "_id_2": {
+                "content": "Second"
+            },
+            "_id_3": {
+                "content": "First text"
+            },
+            "_id_4": {
+                "content": "Second text"
+            }
+        },
+        "slots": {
+            "benefits": [{
+                "title": "_id_1",
+                "text": "_id_3"
+            }, {
+                "title": "_id_2",
+                "text": "_id_4"
+            }]
+        },
+        "schema": {
+            "benefits": {
+                "name": "Benefits",
+                "type": "list",
+                "items": {
+                    "title": {
+                        "name": "Title",
+                        "type": "title"
+                    },
+                    "text": {
+                        "name": "Text",
+                        "type": "text"
+                    }
+                }
+            }
+        }
+    }]
+}

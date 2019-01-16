@@ -11,77 +11,22 @@ export default {
             text: { content: 'Text content here' },
         },
         components: [],
-        blocks: [
-            {
-                id: '_id_1',
-                name: 'HeaderBlock',
-                title: 'Header',
-                data: {
-                    '_id_1': { content: 'First' },
-                    '_id_2': { content: 'Second' },
-                    '_id_3': { content: 'Read More', link: '/more' },
-                    '_id_4': { content: 'Home', link: '/home' },
-                    '_id_5': { content: 'About', link: '/about' },
-                    '_id_6': { content: 'More', link: '/more' },
-                },
-                slots: {
-                    title: '_id_1',
-                    subtitle: '_id_2',
-                    button: '_id_3',
-                    buttonTop: '_id_6',
-                    links: [
-                        { link: '_id_4' },
-                        { link: '_id_5' },
-                    ],
-                },
-                schema: {
-                    title: { title: 'Title', type: 'title' },
-                    subtitle: { title: 'Subtitle', type: 'title' },
-                    button: { title: 'Main button', type: 'link' },
-                    links: { 
-                        title: 'Nav links',
-                        type: 'list',
-                        items: {
-                            link: { title: 'Link', type: 'link'},
-                        },
-                    },
-                    buttonTop: { title: 'Nav button', type: 'link' },
-                },
-            },
-            {
-                id: '_id_2',
-                name: 'BenefitsBlock',
-                title: 'Benefits',
-                data: {
-                    '_id_1': { content: 'First' },
-                    '_id_2': { content: 'Second' },
-                    '_id_3': { content: 'First text' },
-                    '_id_4': { content: 'Second text' },
-                },
-                slots: {
-                    benefits: [
-                        { title: '_id_1', text: '_id_3' },
-                        { title: '_id_2', text: '_id_4' },
-                    ],
-                },
-                schema: {
-                    benefits: {
-                        title: 'Benefits',
-                        type: 'list',
-                        items: {
-                            title: { title: 'Title', type: 'title' },
-                            text: { title: 'Text', type: 'text' },
-                        },
-                    },
-                },
-            },
-        ],
+        blocks: [],
     },
     mutations: {
-        initComponents(state, components) {
-            state.components = components
+        setComponents(state, components) {
+            state.components = [...components]
         },
-        addBlockItem(state, { block, listName }) {
+        setData(state, data) {
+            state.blocks = [...data]
+        },
+        addNewBlock({ blocks }, { index, block }) {
+            blocks.splice(index, 0, block)
+        },
+        moveBlock({ blocks }, { newIndex, oldIndex }) {
+            blocks.splice(newIndex, 0, blocks.splice(oldIndex, 1)[0])
+        },
+        addBlockItem({ placeholders }, { block, listName }) {
             const schema = block.schema[listName].items
             const newBlockItem = Object.keys(schema).reduce((acc, name) => {
                 const id = generateID()
@@ -89,7 +34,7 @@ export default {
 
                 Vue.set(block.data, id, {
                     type,
-                    ...state.placeholders[type],
+                    ...placeholders[type],
                 })
                 acc[name] = id
 
@@ -98,19 +43,23 @@ export default {
 
             block.slots[listName].push(newBlockItem)
         },
-        updateBlocks(state, blocks) {
-            state.blocks = blocks
+        removeBlockItem(_, { block, index, listName }) {
+            block.slots[listName].splice(index, 1)
         },
         updateBlockData(state, { id, data }) {
             const item = state.blocks.find(item => item.id === id)
             const { uid, type, value } = data
             item.data[uid][type] = value
         },
-        setBlockData(state, { id, data, slots, schema }) {
+        setBlockData(state, { id, title, data, slots, schema }) {
             const item = state.blocks.find(item => item.id === id)
+            item.title = title
             item.data = data
             item.slots = slots
             item.schema = schema
+        },
+        removeBlock(state, id) {
+            state.blocks = state.blocks.filter(item => item.id !== id)
         },
     },
     getters: {

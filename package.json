@@ -15,9 +15,11 @@
     "author": "Enkot",
     "license": "ISC",
     "dependencies": {
-        "bulma": "^0.7.2",
-        "v-tooltip": "^2.0.0-rc.33",
         "vue": "^2.5.17",
+        "vuex": "^3.0.1",
+        "bulma": "^0.7.2",
+        "popper.js": "^1.14.6",
+        "v-tooltip": "^2.0.0-rc.33",
         "vue-fragment": "^1.2.2",
         "vue-json-pretty": "^1.4.1",
         "vue-parallaxy": "^1.1.1",
@@ -42,9 +44,5 @@
         "rollup-plugin-vue": "^4.3.2",
         "sass-loader": "^7.1.0",
         "vue-template-compiler": "^2.5.13"
-    },
-    "peerDependencies": {
-        "vue": "^2.5.17",
-        "vuex": "^3.0.1"
     }
 }

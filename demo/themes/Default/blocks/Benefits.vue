@@ -27,11 +27,11 @@
 </template>
 
 <script>
-import { ComponentMixin } from '../../src'
+import { ComponentMixin } from '../../../../src'
 import icon from '../images/truck.svg'
 
 export default {
-    name: 'BenefitsBlock',
+    name: 'Benefits',
     mixins: [ComponentMixin],
     data() {
         return {

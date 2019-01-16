@@ -1,40 +1,25 @@
 <template>
-    <Popper
-        ref="popper"
-        :options="{ placement: 'top' }"
+    <div 
+        slot="reference"
+        :class="`wrapper ${className}`"
     >
-        <div 
-            ref="popoverArea"
-            class="vuestructor-popper"
+        <template
+            v-for="item in itemList"
         >
-            <!-- <button @click="addItem">Add</button> -->
-        </div>
-        <div 
-            slot="reference"
-            :class="`wrapper ${className}`"
-        >
-            <template
-                v-for="item in itemList"
-            >
-                <slot 
-                    :item="item" 
-                />
-            </template>
-        </div>
-    </Popper>
+            <slot 
+                :item="item" 
+            />
+        </template>
+    </div>
 </template>
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-import Popper from './Popper.vue'
 
 const { mapMutations } = createNamespacedHelpers('vs_store')
 
 export default {
     name: 'ListWrapper',
-    components: {
-        Popper,
-    },
     inject: [
         '$vs_id', 
         '$vs_slots',
@@ -54,18 +39,6 @@ export default {
     created() {
         this.className = this.$vnode.data.staticClass
         this.itemList = this.$vs_slots[this.listName]
-    },
-    methods: {
-        ...mapMutations({
-            addBlockItem: 'addBlockItem',
-        }),
-        // addItem() {
-        //     this.addBlockItem({ 
-        //         id: this.$vs_id, 
-        //         listName: this.listName, 
-        //         schema: this.$vs_schema[this.listName][0],
-        //     })
-        // },
     },
 }
 </script>

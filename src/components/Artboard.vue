@@ -1,88 +1,44 @@
 <template>
-    <div style="height: 100%; display: flex; flex-direction: row;">
-        <div 
-            class="sidebar" 
-            style="display: flex; flex-direction: column;"
+    <div class="browser">
+        <ViewFrame 
+            ref="frame" 
+            class="frame"
         >
+            <Popover ref="popper" />
+            <h1 
+                v-if="!blocksList.length"
+                class="drag-placeholder"
+            >Drag blocks here</h1>
             <draggable
-                class="dragArea"
-                :list="components"
-                :options="{ group: { name: 'blocks', pull: 'clone', put: false }}"
-                :clone="cloneItem"
-            >
-                <div
-                    v-for="component in components"
-                    :key="component.name"
-                    class="element"
-                >{{ component.name }}</div>
-            </draggable>
-            <draggable
-                class="dragArea"
-                :list="blockList"
-                :options="{
+                :list="blocksList"
+                class="drag-area"
+                style="height: 100%;"
+                :options="{ 
+                    group: { name: 'vs-blocks' }, 
+                    delay: 100,
                     animation: 150,
                 }"
+                @change="onBlockListChange"
             >
-                <div
-                    v-for="block in blockList"
+                <ComponentInjector
+                    v-for="block in blocksList"
                     :key="block.id"
-                >
-                    <h4 class="title is-4">{{ block.name }}</h4>
-                    <BlockEditor 
-                        :block="block" 
-                        @change="updateData(block.id, $event)"
-                    />
-                    <br>
-                </div>
+                    :block="block"
+                    style="position: relative;"
+                />
             </draggable>
-        </div>
-        <div class="artboard">
-            <div 
-                :style="`width:${viewport}`"
-                class="fake-browser"
-            >
-                <ViewFrame 
-                    ref="frame" 
-                    class="i-frame"
-                >
-                    <h1 
-                        v-if="!blockList.length"
-                        class="drag-placeholder"
-                    >Drag blocks here</h1>
-                    <draggable
-                        v-model="blockList"
-                        class="drag-area"
-                        style="height: 100%;"
-                        :options="{ 
-                            group: { name: 'blocks' }, 
-                            delay: 100,
-                            animation: 150,
-                        }"
-                    >
-                        <ComponentInjector
-                            v-for="block in blockList"
-                            :key="block.id"
-                            :block="block"
-                            :component="componentByName(block.name)"
-                            style="position: relative;"
-                            @change="updateData(block.id, $event)"
-                        />
-                    </draggable>
-                </ViewFrame>
-            </div>
-        </div>
+        </ViewFrame>
     </div>
 </template>
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
 import draggable from 'vuedraggable'
-import { generatePropsFromFunc, generateID } from '../utils/index'
+import { generateID } from '../utils/index'
 
 import ComponentInjector from './ComponentInjector.vue'
 import ViewFrame from './ViewFrame.vue'
-import ListWrapper from './ListWrapper.vue'
-import BlockEditor from './BlockEditor.vue'
+import Popover from './Popover.vue'
 
 const { mapState, mapGetters, mapMutations } = createNamespacedHelpers('vs_store')
 
@@ -92,63 +48,44 @@ export default {
         draggable,
         ComponentInjector,
         ViewFrame,
-        BlockEditor,
-    },
-    props: {
-        viewport: {
-            type: String,
-            default: '100%',
-        },
+        Popover,
     },
     data() {
         return {
-            fakeBrowserWidth: '400px',
             samples: 3,
         }
     },
     computed: {
-        ...mapState({
-            blocks: 'blocks',
-            components: 'components',
-        }),
-        ...mapGetters({
-            componentByName: 'componentByName',
-            blockSlotValue: 'blockSlotValue',
-        }),
-        blockList: {
-            get() {
-                return this.blocks
-            },
-            set(value) {
-                this.updateBlocks(value)
-            },
+        ...mapState(['blocks']),
+        ...mapGetters(['blockSlotValue']),
+        blocksList() {
+            return [...this.blocks]
         },
-    },
-    created() {
-        this.initComponents(this.$builder.components)
     },
     methods: {
-        ...mapMutations({
-            initComponents: 'initComponents',
-            updateBlocks: 'updateBlocks',
-            updateBlockData: 'updateBlockData',
-        }),
-        updateData(id, data) {
-            this.updateBlockData({ id, data })
-        },
-        cloneItem(component) {
-            const { name } = component
-            
-            return this.fillBlockData(name)
-        },
-        fillBlockData(name) {
-            return {
-                id: generateID(),
-                name,
-                title: null,
-                schema: null,
-                data: null,
-                slots: null,
+        ...mapMutations([
+            'addNewBlock',
+            'moveBlock',
+            'updateBlocks',
+        ]),
+        onBlockListChange({ added, moved }) {
+            if (added) {
+                const { newIndex, element } = added
+                const { name } = element
+                this.addNewBlock({
+                    index: newIndex,
+                    block: {
+                        id: generateID(),
+                        name,
+                        schema: null,
+                        data: null,
+                        slots: null,
+                    },
+                })
+            }
+            if (moved) {
+                const { newIndex, oldIndex } = moved
+                this.moveBlock({ newIndex, oldIndex })
             }
         },
     },
@@ -156,31 +93,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.sidebar {
-    width: 300px;
+.browser {
     height: 100%;
-    padding: 16px;
-    border-right: 1px solid #ccc;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,.08);
 }
-.artboard {
-    background-color: #eff4f6;
-    flex-grow: 1;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-
-    .container {
-        width: 90%;
-    }
-    .i-frame {
-        width: 100%;
-        height: 100%;
-    }
-    .fake-browser {
-        border-radius: 6px;
-        overflow: hidden;
-        box-shadow: 0 4px 16px rgba(0,0,0,.08);
-    }
+.frame {
+    width: 100%;
+    height: 100%;
 }
 .drag-placeholder {
     position: absolute;
@@ -192,13 +113,5 @@ export default {
 }
 .block {
     cursor: pointer;
-}
-.element {
-    padding: 20px;
-    border: 1px solid #ccc;
-    background: #fff;
-    margin: 5px;
-    cursor: pointer;
-    border-radius: 4px;
 }
 </style>

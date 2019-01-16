@@ -1,10 +1,12 @@
-import Vue from 'vue'
-import Artboard from './components/Artboard.vue'
 import localStore from './store/index'
-import mixin from './components/ComponentMixin'
-import LoadingComponent from './components/Loading.vue'
+import componentMixin from './mixins/componentMixin'
+import Artboard from './components/Artboard.vue'
+import ComponentsList from './components/ComponentsList.vue'
+import BlocksList from './components/BlocksList.vue'
 
-export const ComponentMixin = mixin
+export const ComponentMixin = componentMixin
+export const VSComponents = ComponentsList
+export const VSSections = BlocksList
 
 const GLOBAL = {
     components: [],
@@ -16,22 +18,27 @@ class Vuestructor {
     }
 
     static install(Vue, options) {
-        if (!options.store) {
+        const { store } = options
+        if (!store) {
             throw new Error('Please provide vuex store.')
         }
-        options.store.registerModule('vs_store', localStore)
-
         const builder = new Vuestructor()
 
+        store.registerModule('vs_store', localStore)
+
+        Vue.prototype.$vsChangeTheme = function(components, data) {
+            store.commit('vs_store/setComponents', components)
+            store.commit('vs_store/setData', data)
+        }
+
         Vue.set(builder, 'blocks', builder.blocks)
-        Vue.component('VuestructorArtboard', Vue.extend(Artboard).extend({
-            beforeCreate() {
-                this.$builder = builder
-            },
+        Vue.component('VSArtboard', Vue.extend(Artboard).extend({
             provide: {
                 options,
             },
         }))
+        Vue.component('VSComponents', ComponentsList)
+        Vue.component('VSSections', BlocksList)
     }
 
     constructor() {
@@ -48,11 +55,6 @@ class Vuestructor {
             name,
             component: component(),
         })
-        // Vue.component(name, () => ({
-        //     component: component(),
-        //     loading: LoadingComponent,
-        //     delay: 0,
-        // }))
     }
 }
 

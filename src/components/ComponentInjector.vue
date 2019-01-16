@@ -6,8 +6,8 @@
         <template slot-scope="{ val, className }">
             <Editor
                 :class-name="className"
-                :data="block.data[val]"
-                @change="editorChanged(val, $event)"
+                :uid="val"
+                :block="block"
             />
         </template>
     </component>
@@ -15,12 +15,12 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-import { generateID } from '../utils/index'
+import { generateID, generateBlockData } from '../utils'
 
 import Editor from './Editor.vue'
 import Loading from './Loading.vue'
 
-const { mapState, mapMutations } = createNamespacedHelpers('vs_store')
+const { mapState, mapMutations, mapGetters } = createNamespacedHelpers('vs_store')
 
 export default {
     name: 'ComponentInjector',
@@ -29,10 +29,6 @@ export default {
     },
     props: {
         block: {
-            type: Object,
-            required: true,
-        },
-        component: {
             type: Object,
             required: true,
         },
@@ -49,28 +45,34 @@ export default {
         }
     },
     computed: {
-        ...mapState({
-            placeholders: 'placeholders',
-        }),
+        ...mapState(['placeholders']),
+        ...mapGetters(['componentByName']),
     },
-    async created() {
-        const component = await this.component.component
-        
-        // Fill block data if empty
-        if (!this.block.data) {
-            this.fillBlockData(component.schema)
-        }
-
-        this.asyncComponent = component
+    watch: {
+        block() {
+            this.updateComponent()
+        },
+    },
+    created() {
+        this.updateComponent()
     },
     provide() {
         // return reactive object
         return this.provideValues
     },
     methods: {
-        ...mapMutations({
-            setBlockData: 'setBlockData',
-        }),
+        ...mapMutations([
+            'setBlockData',
+        ]),
+        async updateComponent() {
+            const { name, data } = this.block
+            const componentData = this.componentByName(name)
+            const component = await componentData.component()
+
+            // Fill block data if empty
+            if (!data) this.fillBlockData(component.schema)
+            this.asyncComponent = component
+        },
         fillBlockData(schema) {
             const { id } = this.block
             const { slots, data } = generateBlockData(schema, this.placeholders)
@@ -78,39 +80,7 @@ export default {
             this.setBlockData({ id, data, slots, schema })
             this.provideValues.$vs_slots = slots
         },
-        editorChanged(uid, values) {
-            this.$emit('change', { uid, ...values })
-        },
     },
-}
-
-function generateBlockData(schema, placeholders, data = {}) {
-    return {
-        slots: getFilledSlots(schema),
-        data,
-    }
-
-    function getFilledSlots(schema, root = true) {
-        if (root) return getFilledSchemaItem(schema)
-        if (schema.type === 'list') {
-            schema = schema.items
-            
-            return [...Array(3)].map(() => getFilledSchemaItem(schema))
-        }
-
-        return getFilledDataId(schema)
-    }
-    function getFilledSchemaItem(schema) {
-        return Object.keys(schema).reduce((acc, name) => {
-            acc[name] = getFilledSlots(schema[name], false)
-            return acc
-        }, {})
-    }
-    function getFilledDataId({ type }, id = generateID()) {
-        data[id] = { type, ...placeholders[type] }
-
-        return id
-    }
 }
 </script>
 

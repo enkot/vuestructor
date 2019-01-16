@@ -6,18 +6,18 @@ import 'bulma/css/bulma.css'
 
 Vue.config.productionTip = false
 
-Vuestructor.register({
-    name: 'HeaderBlock', 
-    component: () => import('./blocks/Header.vue'),
-})
-Vuestructor.register({
-    name: 'BenefitsBlock', 
-    component: () => import('./blocks/Benefits.vue'),
-})
-Vuestructor.register({
-    name: 'DishesBlock', 
-    component: () => import('./blocks/Dishes.vue'),
-})
+// Vuestructor.register({
+//     name: 'HeaderBlock', 
+//     component: () => import('./blocks/Header.vue'),
+// })
+// Vuestructor.register({
+//     name: 'BenefitsBlock', 
+//     component: () => import('./blocks/Benefits.vue'),
+// })
+// Vuestructor.register({
+//     name: 'DishesBlock', 
+//     component: () => import('./blocks/Dishes.vue'),
+// })
 Vue.use(Vuestructor, { 
     store,
     css: [

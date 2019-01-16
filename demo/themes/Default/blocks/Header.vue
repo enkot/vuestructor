@@ -8,7 +8,7 @@
                     <div class="container">
                         <div class="navbar-brand">
                             <a class="navbar-item">
-                                <h2>Logo</h2>
+                                <h2>Default</h2>
                             </a>
                             <span 
                                 class="navbar-burger burger" 
@@ -65,11 +65,11 @@
 </template>
 
 <script>
-import { ComponentMixin } from '../../src'
+import { ComponentMixin } from '../../../../src'
 // import bg from '../images/top-bg.jpg'
 
 export default {
-    name: 'HeaderBlock',
+    name: 'Header',
     mixins: [ComponentMixin],
     // data() {
     //     return {
